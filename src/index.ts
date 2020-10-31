@@ -1,3 +1,5 @@
+#!/usr/bin/env node 
+
 import express = require('express')
 import multer = require('multer')
 import reqid = require('express-request-id')
@@ -9,9 +11,10 @@ import del = require('del')
 
 const app = express()
 
+const PORT = process.env.PORT || 3000
 const BASE_DIR = process.env.TMP_DIR || os.tmpdir()
 
-console.info(`Starting pdf-render-server (BASE_DIR = ${BASE_DIR}`)
+console.info(`Starting pdf-render-server (BASE_DIR = ${BASE_DIR}, PORT = ${PORT})`)
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -34,13 +37,17 @@ const upload = multer({
 app.post("/", reqid(), upload.array('files'), async (req, res) => {
     // @ts-ignore
     const indexFile = req.files.find((file) => file.originalname === 'index.html')
+    const renderDir = path.resolve(indexFile.destination)
+
+    console.debug(`Rendering ${renderDir} to PDF.`)
+
     const pdf = await RenderPDF.generatePdfBuffer('file://' + path.resolve(indexFile.path))
 
     res.header('Content-Type', 'application/pdf')
     res.write(pdf)
     res.end()
 
-    del(indexFile.destination)
+    del(renderDir, {force: true})
 })
 
-app.listen(3000)
+app.listen(PORT)

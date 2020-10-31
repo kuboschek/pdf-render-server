@@ -6,6 +6,9 @@
   "author": "Leonhard Kuboschek <leo@jacobs-alumni.de>",
   "license": "MIT",
   "private": true,
+  "bin": {
+    "pdf-render-server": "./dist/index.js"
+  },
   "devDependencies": {
     "@types/express": "^4.17.8",
     "concurrently": "^5.3.0",
