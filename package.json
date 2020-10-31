@@ -1,0 +1,28 @@
+{
+  "name": "pdf-render-server",
+  "version": "0.0.1",
+  "description": "Render ZIP files containing HTML and assets to a PDF",
+  "main": "dist/index.js",
+  "author": "Leonhard Kuboschek <leo@jacobs-alumni.de>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@types/express": "^4.17.8",
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.6",
+    "typescript": "^4.0.5"
+  },
+  "scripts": {
+    "dev": "concurrently \"tsc -w\" nodemon dist",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/express-request-id": "^1.4.1",
+    "@types/multer": "^1.4.4",
+    "chrome-headless-render-pdf": "^1.8.5",
+    "del": "^6.0.0",
+    "express": "^4.17.1",
+    "express-request-id": "^1.4.1",
+    "multer": "^1.4.2"
+  }
+}
