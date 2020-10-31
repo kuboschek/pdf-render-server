@@ -33,7 +33,6 @@ const upload = multer({
     })
 })
 
-
 app.post("/", reqid(), upload.array('files'), async (req, res) => {
     // @ts-ignore
     const indexFile = req.files.find((file) => file.originalname === 'index.html')
@@ -41,7 +40,9 @@ app.post("/", reqid(), upload.array('files'), async (req, res) => {
 
     console.debug(`Rendering ${renderDir} to PDF.`)
 
-    const pdf = await RenderPDF.generatePdfBuffer('file://' + path.resolve(indexFile.path))
+    const pdf = await RenderPDF.generatePdfBuffer('file://' + path.resolve(indexFile.path), {
+        chromeOptions: ['--no-sandbox', '--headless', '--disable-gpu', 'disable-web-security', '--allow-file-access-from-files']
+    })
 
     res.header('Content-Type', 'application/pdf')
     res.write(pdf)
