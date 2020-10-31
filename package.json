@@ -1,11 +1,10 @@
 {
   "name": "pdf-render-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Render ZIP files containing HTML and assets to a PDF",
   "main": "dist/index.js",
   "author": "Leonhard Kuboschek <leo@jacobs-alumni.de>",
   "license": "MIT",
-  "private": true,
   "bin": {
     "pdf-render-server": "./dist/index.js"
   },
@@ -17,8 +16,9 @@
   },
   "scripts": {
     "dev": "concurrently \"tsc -w\" nodemon dist",
-    "build": "tsc"
+    "build": "tsc --declaration --declarationMap"
   },
+  "repository": "https://github.com/kuboschek/pdf-render-server",
   "dependencies": {
     "@types/express-request-id": "^1.4.1",
     "@types/multer": "^1.4.4",
