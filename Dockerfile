@@ -17,5 +17,6 @@ WORKDIR /app
 RUN npm install && npm run build && npm install -g .
 ENV NODE_ENV=production
 
+EXPOSE 3000
 
 ENTRYPOINT [ "pdf-render-server" ]
