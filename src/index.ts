@@ -1,4 +1,4 @@
-#!/usr/bin/env node 
+#!/usr/bin/env node
 
 import express = require('express')
 import multer = require('multer')
@@ -22,11 +22,11 @@ const upload = multer({
             cb(null, file.originalname)
         },
         destination: async (req, file, cb) => {
-            
+
             // @ts-ignore
             const dir = BASE_DIR + path.sep + req.id
 
-            fs.mkdir(dir, {recursive: true}, () => {
+            fs.mkdir(dir, { recursive: true }, () => {
                 cb(null, dir)
             })
         }
@@ -38,7 +38,7 @@ app.post("/", reqid(), upload.array('files'), async (req, res) => {
     const indexFile = req.files.find((file) => file.originalname === 'index.html')
     const renderDir = path.resolve(indexFile.destination)
 
-    console.debug(`Rendering ${renderDir} to PDF.`)
+    console.debug(`Rendering ${renderDir}`)
 
     const pdf = await RenderPDF.generatePdfBuffer('file://' + path.resolve(indexFile.path), {
         chromeOptions: ['--no-sandbox', '--headless', '--disable-gpu', 'disable-web-security', '--allow-file-access-from-files']
@@ -48,7 +48,30 @@ app.post("/", reqid(), upload.array('files'), async (req, res) => {
     res.write(pdf)
     res.end()
 
-    del(renderDir, {force: true})
+    del(renderDir, { force: true })
 })
 
-app.listen(PORT)
+const server = app.listen(PORT)
+
+
+// Set up graceful shutdown, from https://medium.com/@becintec/building-graceful-node-applications-in-docker-4d2cd4d5d392
+var signals: Record<string, number> = {
+    'SIGHUP': 1,
+    'SIGINT': 2,
+    'SIGTERM': 15
+}
+
+const shutdown = (signal: string, value: number) => {
+    console.info("Stopping pdf-render-server")
+    server.close(() => {
+        console.log("Stopped pdf-render-server")
+        process.exit(128 + value)
+    })
+}
+
+Object.keys(signals).forEach((signal) => {
+    process.on(signal, () => {
+        console.log(`process received a ${signal} signal`)
+        shutdown(signal, signals[signal])
+    })
+})
