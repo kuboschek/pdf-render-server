@@ -9,7 +9,7 @@ pdf-render-server is a stateless service rendering PDF files from multiple input
 
 ## How to use
 
-* `docker run kuboschek/pdf-render-server -p 3000:3000`
+* `docker run ghcr.io/kuboschek/pdf-render-server -p 3000:3000`
 * Send requests
 
 
